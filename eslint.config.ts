@@ -38,6 +38,12 @@ export default tseslint.config(
         },
       ],
       "@typescript-eslint/no-namespace": 0,
+      "prettier/prettier": [
+        "error",
+        {
+          endOfLine: "auto",
+        },
+      ],
     },
   },
 

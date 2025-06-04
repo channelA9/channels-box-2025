@@ -1,5 +1,5 @@
 <template>
-  <a :class="{ active: isActive }">
+  <a :class="isActive ? 'active' : ''" :href="href" class="text-lg inline-block font-bold">
     <slot />
   </a>
 </template>
@@ -15,13 +15,3 @@ const isActive = computed(() => {
   return href === "/" ? urlPathname === href : urlPathname.startsWith(href);
 });
 </script>
-
-<style scoped>
-a {
-  padding: 2px 10px;
-  margin-left: -10px;
-}
-a.active {
-  background-color: #eee;
-}
-</style>
