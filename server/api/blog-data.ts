@@ -20,25 +20,22 @@ export async function GET(c: Context) {
   }
 
   try {
-    // Try both possible locations: public/content (dev) and /content (Cloudflare build)
-    const contentPathDev = path.join(process.cwd(), "public", "content", language, "blog");
-    const contentPathProd = path.join(process.cwd(), "content", language, "blog");
-    let files;
-    let contentPath = contentPathDev;
-    try {
-      files = await readdir(contentPathDev);
-    } catch {
-      contentPath = contentPathProd;
-      files = await readdir(contentPathProd);
-    }
+    // Fetch the list of files via HTTP from the production domain
+    const baseUrl = "https://your-production-domain.com";
+    const indexUrl = `${baseUrl}/content/${language}/blog/`;
+    const indexRes = await fetch(`${indexUrl}index.json`);
+    if (!indexRes.ok) throw new Error("Failed to fetch blog index");
+    const files = await indexRes.json();
 
     const articles: BlogArticle[] = await Promise.all(
-      files
-        .filter((file) => file.endsWith(".md"))
-        .map(async (file) => {
+      (files as string[])
+        .filter((file: string) => file.endsWith(".md"))
+        .map(async (file: string): Promise<BlogArticle> => {
           const slug = file.replace(".md", "");
-          const filePath = path.join(contentPath, file);
-          const fileContent = await readFile(filePath, "utf-8");
+          const fileUrl = `${indexUrl}${file}`;
+          const fileRes = await fetch(fileUrl);
+          if (!fileRes.ok) throw new Error(`Failed to fetch ${fileUrl}`);
+          const fileContent = await fileRes.text();
           const { data: frontmatter } = matter(fileContent);
 
           const title = frontmatter.title || slug;

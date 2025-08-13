@@ -25,17 +25,14 @@ export async function GET(c: Context) {
   }
 
   try {
-    // Try both possible locations: public/content (dev) and /content (Cloudflare build)
-    const filePathDev = path.join(process.cwd(), "public", "content", language, "blog", `${slug}.md`);
-    const filePathProd = path.join(process.cwd(), "content", language, "blog", `${slug}.md`);
-    let filePath = filePathDev;
-    let fileContent = "";
-    try {
-      fileContent = await readFile(filePathDev, "utf-8");
-    } catch {
-      filePath = filePathProd;
-      fileContent = await readFile(filePathProd, "utf-8");
+    // Fetch the markdown file via HTTP from the production domain
+    const baseUrl = "https://channelsbox.dev";
+    const fileUrl = `${baseUrl}/content/${language}/blog/${slug}.md`;
+    const fileRes = await fetch(fileUrl);
+    if (!fileRes.ok) {
+      throw new Error(`Blog post not found: ${fileUrl}`);
     }
+    const fileContent = await fileRes.text();
     const { data: frontmatter, content } = matter(fileContent);
     const pageContent = await marked(content);
 
