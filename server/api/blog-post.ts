@@ -25,7 +25,7 @@ export async function GET(c: Context) {
   }
 
   try {
-    const filePath = path.join(process.cwd(), "content", language, "blog", `${slug}.md`);
+    const filePath = path.join(process.cwd(), "public", "content", language, "blog", `${slug}.md`);
     const fileContent = await readFile(filePath, "utf-8");
     const { data: frontmatter, content } = matter(fileContent);
     const pageContent = await marked(content);

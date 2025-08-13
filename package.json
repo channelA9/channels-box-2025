@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "postbuild": "cpx \"content/**/*\" dist/content",
+    "postbuild": "cpx \"content/**/*\" dist/server/content",
     "preview": "run-s build preview:wrangler",
     "lint": "eslint .",
     "preview:wrangler": "wrangler pages dev",
