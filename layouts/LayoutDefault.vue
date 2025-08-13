@@ -1,42 +1,86 @@
 <script lang="ts" setup>
+import { OhVueIcon, addIcons } from "oh-vue-icons";
 import Link from "../components/Link.vue";
 import Logo from "../components/Logo.vue";
+import { useLanguage } from "../lib/useLanguage";
+import { onMounted, ref } from "vue";
+import { RiMenuLine } from "oh-vue-icons/icons/ri";
+
+const { language, t, toggleLanguage, initLanguage } = useLanguage();
+
+addIcons(RiMenuLine);
+
+onMounted(() => {
+  initLanguage();
+  console.log("Language initialized:", language.value);
+});
+
+const handleLanguageToggle = () => {
+  console.log("Toggling language from", language.value);
+  toggleLanguage();
+};
+
+const isMenuOpen = ref(false);
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+};
+
+const disableMenu = () => {
+  isMenuOpen.value = false;
+};
 </script>
 
 <template>
   <div class="layout-wrapper min-h-screen relative font-sans overflow-hidden">
     <div class="aria-hidden absolute h-full w-full flex">
-      <div class="hidden md:inline absolute h-full w-full">
+      <!-- <div class="hidden lg:inline absolute h-full w-full">
         <img src="/photos/sidebg.jpg" alt="" class="float-right w-1/2 h-full object-cover opacity-50" />
-      </div>
+      </div> -->
 
       <div class="absolute special-grid bg-neutral-200 w-1/2 h-full opacity-50">,</div>
 
       <div class="absolute w-full h-full special-gradient"></div>
     </div>
     <header class="container max-w-5xl mx-auto px-4 py-6 flex justify-between items-center relative z-10 text-gray-900">
-      <nav class="hidden md:flex items-center space-x-6 lg:space-x-8 text-sm tracking-wide">
+      <nav class="hidden lg:flex items-center space-x-6 lg:space-x-8 text-sm tracking-wide">
         <Logo />
-        <Link href="/blog" class="hover:text-gray-600">blog</Link>
-        <Link href="/projects" class="hover:text-gray-600">projects</Link>
-        <Link href="/" class="hover:text-gray-600">interactives</Link>
-        <Link href="/" class="hover:text-gray-600">resume</Link>
+        <Link href="/" class="hover:text-gray-600">{{ t.nav.home }}</Link>
+        <Link href="/blog" class="hover:text-gray-600">{{ t.nav.blog }}</Link>
+        <Link href="/resume" class="hover:text-gray-600">{{ t.nav.resume }}</Link>
       </nav>
 
-      <div class="absolute right-0 transform px-2">
-        <button>JP/EN</button>
+      <div class="hidden lg:block absolute right-0 transform px-2">
+        <button
+          class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 transition-colors text-sm font-medium"
+          @click="handleLanguageToggle"
+        >
+          {{ language === "en" ? "JP" : "EN" }}
+        </button>
       </div>
 
-      <button class="md:hidden z-20">
-        <div class="w-6 h-6 border border-gray-700 rounded p-1 space-y-1">
-          <div class="w-full h-0.5 bg-gray-700"></div>
-          <div class="w-full h-0.5 bg-gray-700"></div>
-          <div class="w-full h-0.5 bg-gray-700"></div>
-        </div>
+      <button class="lg:hidden z-20" @click="toggleMenu">
+        <OhVueIcon name="ri-menu-line" class="w-8 h-8" />
       </button>
+
+      <div
+        v-if="isMenuOpen"
+        class="fixed inset-0 bg-white bg-opacity-95 flex flex-col items-center justify-center z-30 lg:hidden transition-all"
+      >
+        <button class="absolute top-4 right-4 text-4xl" @click="disableMenu">&times;</button>
+        <Logo :link-enabled="false" class="mb-12" />
+        <Link href="/" class="mb-6 text-lg font-medium" @click="disableMenu">{{ t.nav.home }}</Link>
+        <Link href="/blog" class="mb-6 text-lg font-medium" @click="disableMenu">{{ t.nav.blog }}</Link>
+        <Link href="/resume" class="mb-6 text-lg font-medium" @click="disableMenu">{{ t.nav.resume }}</Link>
+        <button
+          class="mt-8 px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors text-base font-medium"
+          @click="handleLanguageToggle"
+        >
+          {{ language === "en" ? "JP" : "EN" }}
+        </button>
+      </div>
     </header>
 
-    <div id="page-content" class="container max-w-5xl mx-auto px-4 py-10 md:py-16 relative z-0 text-gray-900">
+    <div id="page-content" class="container max-w-5xl mx-auto px-4 py-10 lg:py-16 relative z-0 text-gray-900">
       <slot />
     </div>
   </div>

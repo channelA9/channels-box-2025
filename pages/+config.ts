@@ -9,8 +9,8 @@ export default {
   Layout,
 
   // https://vike.dev/head-tags
-  title: "My Vike App",
-  description: "Demo showcasing Vike",
+  title: "channels-box",
+  description: "A personal blog and portfolio site.",
 
   extends: vikeVue as typeof vikeVue,
 } satisfies Config;
