@@ -181,7 +181,7 @@ onMounted(() => {
             </li>
           </ul>
         </div>
-        <div class="grid grid-cols-3 gap-8">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-8">
           <div id="skills" class="flex flex-col">
             <h1 class="text-xl mb-2 font-display font-bold">skills</h1>
             <ul class="">

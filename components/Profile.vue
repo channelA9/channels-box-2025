@@ -14,8 +14,8 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="flex flex-col gap-3">
-    <img src="/photos/profile.png" alt="User Profile" class="rounded-full w-24 h-24 object-cover" />
+  <div class="flex flex-col gap-3 min-w-36 min-h-36">
+    <img src="/photos/portrait.png" alt="User Profile" class="rounded-full w-36 h-36 object-cover" />
     <div class="flex flex-col">
       <h1 class="text-lg font-bold tracking-tight">{{ t.home.profile.name }}</h1>
       <h2 class="text-sm text-neutral-500">{{ t.home.profile.title }}</h2>
