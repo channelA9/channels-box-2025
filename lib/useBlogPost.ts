@@ -1,6 +1,6 @@
-import { ref, computed, watch } from 'vue';
-import type { Language } from './i18n';
-import { useLanguage } from './useLanguage';
+import { ref, computed, watch } from "vue";
+import type { Language } from "./i18n";
+import { useLanguage } from "./useLanguage";
 
 export interface BlogPostData {
   title: string;
@@ -34,19 +34,19 @@ async function loadBlogPost(slug: string, language: Language): Promise<BlogPostD
       throw new Error(`Failed to load blog post: ${response.statusText}`);
     }
     const data = await response.json();
-    
+
     if (!postCache.value[slug]) {
       postCache.value[slug] = {};
     }
-    
+
     const blogPost: BlogPostData = {
       title: data.title,
       date: new Date(data.date),
       pageContent: data.pageContent,
       excerpt: data.excerpt,
-      category: data.category
+      category: data.category,
     };
-    
+
     postCache.value[slug][language] = blogPost;
     return blogPost;
   } catch (error) {
@@ -60,16 +60,20 @@ async function loadBlogPost(slug: string, language: Language): Promise<BlogPostD
 export function useBlogPost(slug: string) {
   const { language } = useLanguage();
   const post = ref<BlogPostData | null>(null);
-  
+
   const blogPost = computed(() => post.value);
-  
+
   // Load post when language changes
-  watch(language, async (newLang) => {
-    post.value = await loadBlogPost(slug, newLang);
-  }, { immediate: true });
-  
+  watch(
+    language,
+    async (newLang) => {
+      post.value = await loadBlogPost(slug, newLang);
+    },
+    { immediate: true },
+  );
+
   return {
     blogPost,
-    isLoading: computed(() => isLoading.value)
+    isLoading: computed(() => isLoading.value),
   };
 }
