@@ -3,18 +3,21 @@ import FeatureItem from "../../components/homepage/FeatureItem.vue";
 import { OhVueIcon, addIcons } from "oh-vue-icons";
 import { RiTranslate, RiGithubFill, RiLinkedinFill } from "oh-vue-icons/icons/ri";
 import { IoCubeSharp } from "oh-vue-icons/icons/io";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useLanguage } from "../../lib/useLanguage";
 import { useBlogData } from "../../lib/useBlogData";
 import SubfeatureItem from "../../components/homepage/SubfeatureItem.vue";
 import Profile from "../../components/Profile.vue";
 addIcons(RiTranslate, RiGithubFill, RiLinkedinFill, IoCubeSharp);
 
+const isClient = ref(false);
+
 const { language, t, initLanguage } = useLanguage();
 const { recentBlogPost, isLoading } = useBlogData();
 
 onMounted(() => {
   initLanguage();
+  isClient.value = true;
 });
 
 const formattedDate = computed(() => {
@@ -45,7 +48,7 @@ const formattedDate = computed(() => {
           <p class="font-black bg-white p-1 text-xl tracking-tight">{{ t.home.theLatest }}</p>
         </div>
         <div class="flex flex-col gap-y-2">
-          <div v-if="isLoading" class="flex flex-col gap-y-2">
+          <div v-if="isClient && isLoading" class="flex flex-col gap-y-2">
             <h2 class="text-3xl lg:text-4xl bg-gray-200 tracking-tight font-bold w-fit p-2">Loading...</h2>
           </div>
           <a v-else-if="recentBlogPost" :href="recentBlogPost.href" class="block hover:scale-105 transition-transform">

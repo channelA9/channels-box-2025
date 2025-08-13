@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import ArticlePreview from "../../components/blog/ArticlePreview.vue";
 import Category from "../../components/blog/Category.vue";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useLanguage } from "../../lib/useLanguage";
 import { useBlogData, type BlogArticle } from "../../lib/useBlogData";
+
+const isClient = ref(false);
+
 const { language, t, initLanguage } = useLanguage();
 const { blogArticles, isLoading } = useBlogData();
 
 onMounted(() => {
   initLanguage();
+  isClient.value = true;
 });
 
 const categorizedPosts = computed(() => {
@@ -70,7 +74,10 @@ const formattedDate = (date: Date) => {
         :date="formattedDate(article.date)"
         :href="article.href"
       />
-      <div v-if="!isLoading && blogArticles.length === 0" class="text-gray-500 col-span-full text-center py-8">
+      <div
+        v-if="isClient && !isLoading && blogArticles.length === 0"
+        class="text-gray-500 col-span-full text-center py-8"
+      >
         {{ t.blog.noPosts }}. {{ t.blog.noPostsDescription }}
       </div>
     </div>

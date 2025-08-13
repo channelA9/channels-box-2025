@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useLanguage } from "../../../lib/useLanguage";
 import { useBlogPost } from "../../../lib/useBlogPost";
 import { usePageContext } from "vike-vue/usePageContext";
@@ -10,8 +10,10 @@ const slug = pageContext.routeParams?.slug as string;
 const { language, initLanguage } = useLanguage();
 const { blogPost, isLoading } = useBlogPost(slug);
 
+const isClient = ref(false);
 onMounted(() => {
   initLanguage();
+  isClient.value = true;
 });
 
 const formattedDate = computed(() => {
@@ -27,7 +29,7 @@ const formattedDate = computed(() => {
 
 <template>
   <div class="blog-post-container">
-    <div v-if="isLoading" class="text-center py-8">
+    <div v-if="isClient && isLoading" class="text-center py-8">
       <p class="text-gray-500">Loading blog post...</p>
     </div>
     <div v-else-if="blogPost">
