@@ -21,7 +21,7 @@ export async function GET(c: Context) {
 
   try {
     // Fetch the list of files via HTTP from the production domain
-    const baseUrl = "https://your-production-domain.com";
+    const baseUrl = "https://channelsbox.dev";
     const indexUrl = `${baseUrl}/content/${language}/blog/`;
     const indexRes = await fetch(`${indexUrl}index.json`);
     if (!indexRes.ok) throw new Error("Failed to fetch blog index");
