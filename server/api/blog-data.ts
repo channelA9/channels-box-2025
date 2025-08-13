@@ -20,8 +20,17 @@ export async function GET(c: Context) {
   }
 
   try {
-    const contentPath = path.join(process.cwd(), "public", "content", language, "blog");
-    const files = await readdir(contentPath);
+    // Try both possible locations: public/content (dev) and /content (Cloudflare build)
+    const contentPathDev = path.join(process.cwd(), "public", "content", language, "blog");
+    const contentPathProd = path.join(process.cwd(), "content", language, "blog");
+    let files;
+    let contentPath = contentPathDev;
+    try {
+      files = await readdir(contentPathDev);
+    } catch {
+      contentPath = contentPathProd;
+      files = await readdir(contentPathProd);
+    }
 
     const articles: BlogArticle[] = await Promise.all(
       files

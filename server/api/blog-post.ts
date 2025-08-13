@@ -25,8 +25,17 @@ export async function GET(c: Context) {
   }
 
   try {
-    const filePath = path.join(process.cwd(), "public", "content", language, "blog", `${slug}.md`);
-    const fileContent = await readFile(filePath, "utf-8");
+    // Try both possible locations: public/content (dev) and /content (Cloudflare build)
+    const filePathDev = path.join(process.cwd(), "public", "content", language, "blog", `${slug}.md`);
+    const filePathProd = path.join(process.cwd(), "content", language, "blog", `${slug}.md`);
+    let filePath = filePathDev;
+    let fileContent = "";
+    try {
+      fileContent = await readFile(filePathDev, "utf-8");
+    } catch {
+      filePath = filePathProd;
+      fileContent = await readFile(filePathProd, "utf-8");
+    }
     const { data: frontmatter, content } = matter(fileContent);
     const pageContent = await marked(content);
 
